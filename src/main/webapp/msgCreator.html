@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title></title>
+		<link rel="stylesheet" href="">
+	</head>
+	<body>
+		<span>
+		id: <input id="cId" type="number">
+		 - peso: <input id="weight" type="number" step="0.10"> 
+		 - event: 
+		 <select id="state">
+			<option value="1">ABIERTA</option>
+			<option value="2">ARRIBA</option>
+			<option value="3">ABAJO</option>
+			<option value="4">INICIO</option>
+			<option value="5">VIVO</option>
+		</select>
+	<input type="button" value="enviar" onclick="send();">
+	</span>
+	<script src="js/jquery.js" type="text/javascript"></script>
+	<script type="text/javascript">
+	function send(){
+		var params = "?cid=" + $('#cId').val() + "&w=" + $('#weight').val() + "&ev=" + $('#state').val();
+		$.get("/cestointeligente/services/createMsg"+params);
+	}
+	</script>
+</body>
+</html>

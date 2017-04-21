@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Generador de mensajes</title>
+</head>
+<body>
+<div>
+<label for="compID">ID Compostera:<input type="number" id="compID" ></label>
+<label for="compW">Peso inicial:<input type="number" id="compW" ></label>
+<br>
+<input id="fecha" type="date" placeholder="elegir fecha"><input type="button" value="crear" onclick="create()"></div>
+<textarea id="result" style="width: 600px;height:500px;"></textarea>
+<script src="js/jquery.js" type="text/javascript"></script>
+<script>
+function create(){
+	  var sql = "";
+	  var compPeso = parseInt($("#compW").val());
+	  var id = $("#compID").val();
+	  var fecha = $("#fecha").val().split('-');
+	  var dias = daysInMonth(fecha[1],fecha[0])
+	  for(i=fecha[2];i<=dias;i++){
+	    date = '"'+fecha[0]+'-'+fecha[1]+'-'+((i<10)?'0'+i:i)+' 08:00:00"';
+	    for(b=0;b<=15;b++){
+	      type=Math.floor(Math.random()*2)+2;
+	      if(type == 2){
+	        compPeso +=0.35;
+	      }else if(type == 3){
+	    	  if((compPeso-0.2)<0){
+	    		  type = 2;
+	    		  compPeso += 0.25
+	    	  }else{
+			      compPeso -=0.2;
+	    	  }
+	      }
+	      sql =sql + "CALL insertMessage("+id+","+date+","+compPeso.toFixed(2)+","+type+");&#10;";
+	      
+	    }
+	  }
+	  $("#result").empty();
+	  $("#result").append(sql);
+	}
+function daysInMonth(month,year) {
+    return new Date(year, month, 0).getDate();
+}
+</script>
+</body>
+</html>
