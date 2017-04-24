@@ -4,14 +4,16 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.EnumMap;
 import java.util.Map;
- 
+
 import javax.imageio.ImageIO;
- 
+
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
+import com.google.zxing.Writer;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
@@ -25,9 +27,10 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 public class GenerateQRCode {
  
  
-	public static void createQR(String codigoQR, int idUsuario) {
+	public static void createQROrigin(String codigoQR, int idUsuario) {
 		
 		String filePath = "C:/Proyectos/cestointeligente/src/main/resources/imagen/codigoQR"+idUsuario+".png";
+		
 		int size = 250;
 		String fileType = "png";
 		File myFile = new File(filePath);
@@ -61,6 +64,44 @@ public class GenerateQRCode {
 				}
 			}
 			ImageIO.write(image, fileType, myFile);
+		} catch (WriterException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println("\n\nYou have successfully created QR Code.");
+	}
+	
+	public static void createQR(String codigoQR, int idUsuario) {
+		
+		String filePath = "C:/Proyectos/cestointeligente/src/main/resources/imagen/codigoQR"+idUsuario+".png";
+		
+		int size = 250;
+		String fileType = "png";
+		try {
+			
+			Writer qrCodeWriter = new QRCodeWriter();
+			
+			BitMatrix byteMatrix = qrCodeWriter.encode(codigoQR, BarcodeFormat.QR_CODE, size,
+					size);
+			
+			int CrunchifyWidth = byteMatrix.getWidth();
+			BufferedImage image = new BufferedImage(CrunchifyWidth, CrunchifyWidth,
+					BufferedImage.TYPE_INT_RGB);
+	 
+	        // Iterate through the matrix and draw the pixels to the image
+	        for (int y = 0; y < CrunchifyWidth; y++) {
+	            for (int x = 0; x < CrunchifyWidth; x++) {
+	                int grayValue = (byteMatrix.get(x, y) ? 0 : 1) & 0xff;
+	                image.setRGB(x, y, (grayValue == 0 ? 0 : 0xFFFFFF));
+	            }
+	        }
+	 
+	        // Write the image to a file
+	        FileOutputStream qrCode = new FileOutputStream(filePath);
+	        ImageIO.write(image, fileType, qrCode);
+	        qrCode.close();
+			
 		} catch (WriterException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

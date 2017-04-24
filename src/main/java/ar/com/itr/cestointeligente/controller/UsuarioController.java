@@ -35,11 +35,12 @@ public class UsuarioController extends ControllersCore{
                              @RequestParam(value = "telefono", required=true) String telefono,
                              @RequestParam(value = "password", required=true) String password,
                              @RequestParam(value = "email", required=true) String email,Model model){
-	
-		String codigoqr=PasswordUtils.encriptar(apellido+telefono+nombre);
+		
+		String userData = apellido+telefono+nombre;
+		String codigoqr=PasswordUtils.encriptar(userData);
 		usuDAO.create(nombre, PasswordUtils.encriptar(password), apellido, telefono,nombre+"."+apellido,1,codigoqr, email);
 	    Usuario usuario=usuDAO.getByNombreUsuario(nombre+"."+apellido);
-	    GenerateQRCode.createQR(codigoqr,usuario.getId());
+	    GenerateQRCode.createQR(userData,usuario.getId());
 	    return "sections/usuario";
 	}
 	
