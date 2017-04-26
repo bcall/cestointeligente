@@ -117,10 +117,29 @@ public class UsuarioDAOImp extends GenericDAOImp implements UsuarioDAO {
 			Map<String, Object> params = new HashMap<String, Object>();
 			params.put("codigoqr", codigoqr);
 			usuario = this.getJdbcTemplate().queryForObject(sql, params, new UsuarioTotemRowMapper());
+			setPesos(usuario);
 		} catch (Exception e) {
 			System.out.println("error - intente mas tarde. " + e);
 		}
 		return usuario;
+	}
+
+	@Override
+	public void setPesos(UsuarioTotem usuario) {
+		String sql = "select sum(CASE WHEN tipo_residuo_id=5 then concurso_deposito.peso else 0 end) pesoA, sum(CASE WHEN tipo_residuo_id=7 then concurso_deposito.peso else 0 end) pesoB, sum(CASE WHEN tipo_residuo_id=10 then concurso_deposito.peso else 0 end) pesoC from concurso_deposito where concurso_deposito.isla_id=9 and concurso_deposito.usuario_id=:id";		
+
+		logger.info("DAO - Consultando base");
+		try {
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put("id", usuario.getId());
+			Map<String, Object> map = this.getJdbcTemplate().queryForMap(sql, params);
+			usuario.setPesoA((long)Double.parseDouble(map.get("pesoA").toString()));
+			usuario.setPesoB((long)Double.parseDouble(map.get("pesoB").toString()));
+			usuario.setPesoC((long)Double.parseDouble(map.get("pesoC").toString()));
+		} catch (Exception e) {
+			System.out.println("error - intente mas tarde. " + e);
+		}
+		
 	}
 
 }

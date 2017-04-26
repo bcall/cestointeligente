@@ -26,4 +26,6 @@ public interface UsuarioDAO {
 	
 	void create(String nombre, String password, String apellido, String telefono, String nombre_usuario,
 			int grupo_id, String codigo_qr, String email);
+	
+	void setPesos(UsuarioTotem usuario);
 }
